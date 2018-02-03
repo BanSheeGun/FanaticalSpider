@@ -7,6 +7,10 @@ import xlwt
 
 
 def get_page_soup(url):
+    """
+    :param url: 页面 url
+    :return: 页面内容
+    """
     driver.get(url)
     html = driver.page_source
     soup = BeautifulSoup(html, "lxml")
@@ -14,6 +18,11 @@ def get_page_soup(url):
 
 
 def game_spider(url, bundle_name):
+    """
+    :param url:慈善包页面 url
+    :param bundle_name: 慈善包包名
+    :return: 慈善包所包含的游戏
+    """
     res = []
     soup = get_page_soup(url)
     games_tags = soup.find_all("p", class_="text-truncated m-0")
@@ -26,6 +35,10 @@ def game_spider(url, bundle_name):
 
 
 def bundle_spider(url):
+    """
+    :param url:Fanatical 的 url
+    :return: 页面包含的慈善包
+    """
     res = []
     soup = get_page_soup(url)
     bundle_tags = soup.find_all('a', class_="faux-block-link__overlay-link")
@@ -42,6 +55,9 @@ def bundle_spider(url):
 
 
 def output_to_excel():
+    """
+    :return:将所有信息保存到 xls 文件中
+    """
     wbk = xlwt.Workbook()
     bundle_sheet = wbk.add_sheet("Bundle")
     game_sheet = wbk.add_sheet("Game")
@@ -73,10 +89,10 @@ def output_to_excel():
 
 Fanatical = "https://www.fanatical.com"
 BundlePage = "https://www.fanatical.com/en/bundle"
-options = webdriver.FirefoxOptions()
+options = webdriver.FirefoxOptions()  # 初始化浏览器
 options.add_argument('-headless')
 driver = webdriver.Firefox(firefox_options=options)
 
-Bundles = bundle_spider(BundlePage)
-output_to_excel()
-driver.close()
+Bundles = bundle_spider(BundlePage)  # 爬取页面信息
+output_to_excel()  # 保存信息
+driver.close()  # 关闭浏览器
